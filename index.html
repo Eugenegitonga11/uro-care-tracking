@@ -163,6 +163,48 @@ select,input[type=date],input[type=text]{border:1px solid var(--line);border-rad
 .form3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:end}
 @media(max-width:700px){.form3{grid-template-columns:1fr}}
 .sample{font-size:13px;color:var(--mute);margin-top:16px}
+/* WhatsApp Desktop light look for the chat list and conversation */
+.list{background:#fff}
+.lh h2{font-size:22px;color:#111b21}
+.list .search{background:#f0f2f5;border:0;border-radius:8px;height:38px;color:#54656f}
+.list .tab{background:#f0f2f5;border:0;color:#54656f;padding:6px 12px}
+.list .tab.on{background:#d9fdd3;color:#008069}
+.list .rows{border-top:0}
+.row{grid-template-columns:49px minmax(0,1fr);gap:13px;align-items:center;padding:0 0 0 13px;border:0;border-left:0}
+.row.on{background:#f0f2f5;border-left-color:transparent}.row:hover{background:#f5f6f6}
+.row .av{width:49px;height:49px;font-size:16px}
+.rb{border-bottom:1px solid #e9edef;padding:11px 15px 11px 0}
+.r1,.r2{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.row .nm{font-size:16px;font-weight:400;color:#111b21}
+.rt{font-size:12px;color:#667781;white-space:nowrap}.rt.g{color:#1fa855;font-weight:500}
+.row .pv{font-size:14px;color:#667781;display:flex;align-items:center;gap:3px}
+.row .pv span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.un{background:#25d366;color:#fff}
+.r3{margin-top:5px}.r3 .pill{font-size:12px;padding:0 8px}
+.conv{background-color:#efeae2;background-image:radial-gradient(#d6cfc2 1px,transparent 1.3px);background-size:22px 22px}
+.ch{background:#f0f2f5;border-bottom:1px solid #d1d7db}
+.ch .b1,.comp .b1{background:#00a884}
+.msgs{gap:2px;padding:16px 6%}
+.m{display:block;max-width:min(65%,560px);margin-top:6px}
+.m.in{align-self:flex-start}.m.out{align-self:flex-end}
+.m .bb{position:relative;background:#fff;color:#111b21;border:0;border-radius:7.5px;padding:6px 9px 8px;font-size:14.2px;line-height:19px;box-shadow:0 1px .5px #0b141a21}
+.m.out .bb{background:#d9fdd3}
+.m.in .bb{border-top-left-radius:0}.m.out .bb{border-top-right-radius:0}
+.m .bb::before{content:"";position:absolute;top:0;width:8px;height:13px;background:inherit}
+.m.in .bb::before{left:-8px;clip-path:polygon(0 0,100% 0,100% 100%)}
+.m.out .bb::before{right:-8px;clip-path:polygon(0 0,100% 0,0 100%)}
+.who{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;margin-bottom:2px;white-space:normal}
+.who.ai{color:#6c4cf5}.who.st{color:#008069}.who svg.i{width:13px;height:13px}
+.tm{float:right;display:inline-flex;align-items:center;gap:3px;margin:8px 0 -5px 12px;font-size:11px;color:#667781;white-space:nowrap}
+.tk{width:16px;height:11px;fill:none;stroke:#53bdeb;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.day{align-self:center;background:#fff;color:#54656f;font-size:12.5px;padding:5px 12px;border-radius:7.5px;box-shadow:0 1px .5px #0b141a21;margin:10px 0 4px}
+.conv .sys{background:#fff;border:0;border-radius:7.5px;box-shadow:0 1px .5px #0b141a21;color:#54656f;margin:6px 0}
+.conv .sum{align-self:center;max-width:min(92%,620px);background:#ffeecd;border:0;border-radius:7.5px;color:#54656f;font-size:13.5px;box-shadow:0 1px .5px #0b141a21}
+.conv .sum h3{color:#54656f}
+.conv .typing{background:#d9fdd3;border-radius:7.5px;box-shadow:0 1px .5px #0b141a21}.conv .typing i{background:#667781}
+.comp{background:#f0f2f5;border-top:0}
+.comp textarea{background:#fff;border:0;border-radius:8px;height:46px;padding:12px}
+.comp .b3{color:#54656f}.comp .b3:hover{background:#e4e6e9}
 @media(max-width:1200px){.inbox{grid-template-columns:280px minmax(0,1fr)}.prof{display:none;position:fixed;top:0;right:0;bottom:0;width:min(340px,92vw);z-index:30;box-shadow:-10px 0 30px #0003}.app.sp .prof{display:block}#profBtn,#pX{display:inline-grid}}
 @media(max-width:920px){.app{grid-template-columns:68px minmax(0,1fr)}.side .tx,.card,.num,.me div,.brand span{display:none}.nav{justify-content:center;padding:10px}.nav .n{position:absolute;margin:0;transform:translate(14px,-12px);font-size:11px}.nav{position:relative}.grid2{grid-template-columns:1fr}}
 @media(max-width:700px){.app{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.side{flex-direction:row;padding:8px;overflow-x:auto;gap:4px;align-items:center}.nav{width:auto;flex:none;min-width:48px}.brand{padding:0 6px 0 2px}.me{display:none}.inbox{grid-template-columns:1fr}.app.op .list{display:none}.app:not(.op) .conv{display:none}#backBtn{display:inline-grid}.top{padding:10px 14px}.top h1{font-size:20px}.top .btn .tx{display:none}.m{max-width:88%}.ch{padding:10px 12px}.bar{grid-template-columns:7em minmax(0,1fr) 3em}}
@@ -221,6 +263,9 @@ const tm=t=>new Date(t).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}
 const rel=t=>{const m=Math.round((now()-t)/6e4);return m<1?'Just now':m<60?m+'m':m<1440?Math.round(m/60)+'h':'Yesterday'};
 const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return `hsl(${h} 45% 48%)`};
 const ini=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('');
+const TK='<svg class="tk" viewBox="0 0 16 11"><path d="M11.1.8 4.7 8.2 1.9 5.4M15.1.8 8.7 8.2 7.6 7.1"/></svg>';
+const dl=t=>{const d=new Date(t).toDateString(),n=new Date();return d===n.toDateString()?'Today':d===new Date(n-H24).toDateString()?'Yesterday':new Date(t).toLocaleDateString([], {day:'numeric',month:'short'})};
+const lt=t=>{const d=dl(t);return d==='Today'?tm(t):d};
 const av=(n,c='')=>`<div class="av ${c}" style="background:${hue(n)}">${esc(ini(n))}</div>`;
 const STAFF='Wanjiku (Reception)';
 const cfg={ai:true,book:true,strip:true,hours:false};
@@ -271,11 +316,11 @@ function nav(){const L={inbox:'Chats',analytics:'Analytics',ads:'Ad tracking',re
 function go(v){S.v=v;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));$('title').textContent={inbox:'Chats',analytics:'Analytics',replies:'Quick replies',settings:'AI settings'}[v]||'Ad tracking';document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('profBtn').style.visibility=v==='inbox'?'':'hidden';if(v==='analytics')ana();if(v==='ads')adsv();if(v==='replies')qrv();if(v==='settings')cfgv()}
 function tabs(){const F=[['all','All'],['rec','Needs reception'],['ai','AI handling'],['closed','Closed']];$('tabs').innerHTML=F.map(([k,l])=>{const n=k==='all'?chats.length:chats.filter(c=>c.st===k).length;return `<button class="tab ${S.f===k?'on':''}" data-f="${k}">${l} ${n}</button>`}).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.f=b.dataset.f;tabs();list()})}
 function list(){const q=S.q.toLowerCase();const L=chats.filter(c=>(S.f==='all'||c.st===S.f)&&(!q||c.name.toLowerCase().includes(q)||c.msgs.some(m=>m.x.toLowerCase().includes(q)))).sort((a,b)=>(b.st==='rec')-(a.st==='rec')||(b.urgent?1:0)-(a.urgent?1:0)||b.msgs.at(-1).t-a.msgs.at(-1).t);
-$('rows').innerHTML=L.length?L.map(c=>{const lm=[...c.msgs].reverse().find(m=>m.f!=='s')||c.msgs.at(-1);const pre=lm.f==='a'?'AI: ':lm.f==='t'?'You: ':'';return `<button class="row ${c.id===S.cur?'on':''}" data-id="${c.id}">${av(c.name)}<div><div class="nm">${esc(c.name)}${c.urgent?'<span class="pill p-bad" style="padding:0 7px">Urgent</span>':''}</div><div class="pv">${esc(pre+lm.x)}</div><div style="margin-top:5px">${stP(c)}</div></div><div class="meta">${rel(c.msgs.at(-1).t)}${c.un?`<span class="un">${c.un}</span>`:''}</div></button>`}).join(''):'<div class="empty">No chats match.</div>';
+$('rows').innerHTML=L.length?L.map(c=>{const lm=[...c.msgs].reverse().find(m=>m.f!=='s')||c.msgs.at(-1);const pre=lm.f==='a'?'AI: ':lm.f==='t'?'You: ':'';return `<button class="row ${c.id===S.cur?'on':''}" data-id="${c.id}">${av(c.name)}<div class="rb"><div class="r1"><span class="nm">${esc(c.name)}</span><span class="rt ${c.un?'g':''}">${lt(c.msgs.at(-1).t)}</span></div><div class="r2"><span class="pv">${lm.f!=='p'&&lm.f!=='s'?TK:''}<span>${esc(pre+lm.x)}</span></span>${c.un?`<span class="un">${c.un}</span>`:''}</div><div class="r3">${stP(c)}</div></div></button>`}).join(''):'<div class="empty">No chats match.</div>';
 $('rows').querySelectorAll('.row').forEach(b=>b.onclick=()=>{S.cur=b.dataset.id;const c=cur();c.un=0;S.draft=false;$('app').classList.add('op');render()})}
 function win(c){const r=H24-(now()-lastP(c));if(r<=0)return{open:false,h:`<span class="pill p-bad">${ic('clock')}Reply window closed</span> Free text is blocked by WhatsApp. Send an approved template.`};const h=Math.floor(r/36e5),m=Math.floor(r%36e5/6e4);return{open:true,h:`<span class="pill p-ok">${ic('clock')}${h}h ${m}m left</span> to reply freely`}}
 function conv(){const c=cur();if(!c){$('conv').innerHTML='<div class="empty">Select a chat</div>';return}const w=win(c);
-const mm=c.msgs.map(m=>m.f==='s'?`<div class="sys">${esc(m.x)} · ${tm(m.t)}</div>`:m.f==='p'?`<div class="m pt"><div class="lb">${esc(c.name)} · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`:m.f==='a'?`<div class="m ai"><div class="lb">${ic('ai')} AI assistant · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`:`<div class="m st ${m.tp?'tp':''}"><div class="lb">${esc(m.n||STAFF)}${m.tp?' · template':''} · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`).join('');
+let ld='';const mm=c.msgs.map(m=>{const d=dl(m.t);let h='';if(d!==ld){ld=d;h=`<div class="day">${d}</div>`}if(m.f==='s')return h+`<div class="sys">${esc(m.x)} · ${tm(m.t)}</div>`;const out=m.f!=='p';const who=m.f==='a'?`<span class="who ai">${ic('ai')}AI assistant</span>`:m.f==='t'?`<span class="who st">${esc(m.n||STAFF)}${m.tp?' · template':''}</span>`:'';return h+`<div class="m ${out?'out':'in'}"><div class="bb">${who}${esc(m.x)}<span class="tm">${tm(m.t)}${out?TK:''}</span></div></div>`}).join('');
 $('conv').innerHTML=`<div class="ch"><div class="who">${av(c.name)}<div><b>${esc(c.name)}</b><div class="pills">${stP(c)}<span class="pill p-mute">${esc(c.src)}</span></div></div></div>
 <button class="sw ${c.bot&&c.st!=='closed'?'on':''}" id="botSw" ${c.st==='closed'?'disabled':''} aria-pressed="${c.bot}"><i></i>AI replies</button>
 ${c.st==='closed'?`<button class="btn b2" id="reopen">${ic('chat')}Reopen</button>`:c.bot?`<button class="btn b2" id="take">${ic('hand')}Take over</button>`:`<button class="btn b2" id="hand">${ic('ai')}Hand back to AI</button>`}
