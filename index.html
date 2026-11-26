@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>URO-CARE Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool, calm and discreet (urology clinic)
+   IDEA a shipped WhatsApp team inbox where the AI assistant and reception share each chat
+   PICTURE the working inbox itself: chat list, live conversation, patient profile
+   COLOUR white panels, near-black sidebar, violet accent like the reference, green for live, amber/red for attention
+   TYPE Inter 700 + Inter
+   LAYOUT laptop: sidebar | chats | conversation | profile; phone: top nav, then list or chat */
+:root,:root[data-theme=dark],:root[data-theme=light]{color-scheme:light;--bg:#ffffff;--panel:#ffffff;--soft:#f7f7fa;--side:#1b1d29;--ink:#1a1b25;--mute:#6b6e7e;--line:#ebebf0;--acc:#7b5cf5;--acc2:#f1edff;--accink:#5b3fe0;--ok:#16a34a;--okbg:#e8f8ee;--warn:#c26a00;--warnbg:#fff4e0;--bad:#d92d2d;--badbg:#fdecec}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);height:100%}
+.side{background:var(--side);color:#cfd0dc;display:flex;flex-direction:column;gap:4px;padding:18px 12px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:17px;padding:2px 8px 14px}
+.logo{width:32px;height:32px;border-radius:9px;background:var(--acc);display:grid;place-items:center;color:#fff}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:#cfd0dc;min-height:44px;text-align:left;width:100%}
+.nav:hover{background:#ffffff12}.nav.on{background:#ffffff1c;color:#fff}
+.nav .n{margin-left:auto;background:var(--acc);color:#fff;font-size:12px;font-weight:600;border-radius:99px;padding:1px 8px}
+.card{background:#ffffff0f;border-radius:12px;padding:14px;margin-top:auto;font-size:13px}
+.card b{display:block;color:#fff;font-size:16px}
+.meter{height:6px;border-radius:9px;background:#ffffff1f;margin:8px 0 10px;overflow:hidden}.meter i{display:block;height:100%;background:var(--acc)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:2px 10px;font-size:13px;font-weight:500;white-space:nowrap}
+.pill svg.i{width:14px;height:14px}
+#pX{display:none}
+.dot{width:7px;height:7px;border-radius:9px;background:currentColor}
+.p-ok{background:var(--okbg);color:var(--ok)}.p-ai{background:var(--acc2);color:var(--accink)}.p-warn{background:var(--warnbg);color:var(--warn)}.p-bad{background:var(--badbg);color:var(--bad)}.p-mute{background:var(--soft);color:var(--mute);border:1px solid var(--line)}
+.num{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;background:#ffffff0f;font-size:13px}
+.num .wa{width:28px;height:28px;border-radius:99px;background:#25d366;display:grid;place-items:center;color:#fff}
+.me{display:flex;align-items:center;gap:10px;padding:14px 8px 0;margin-top:10px;border-top:1px solid #ffffff1a;font-size:13px}
+.me b{color:#fff;display:block;font-size:14px}
+.main{display:flex;flex-direction:column;min-height:0}
+.top{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top h1{font-size:24px;line-height:1.1;margin:0;letter-spacing:-.02em;margin-right:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 14px;border-radius:10px;font-weight:600;font-size:14px;white-space:nowrap}
+.b1{background:var(--acc);color:#fff}.b1:hover{filter:brightness(1.08)}
+.b2{border:1px solid var(--line);background:var(--panel)}.b2:hover{background:var(--soft)}
+.b3{color:var(--accink)}.b3:hover{background:var(--acc2)}
+.ib{width:40px;height:40px;border-radius:10px;display:inline-grid;place-items:center;border:1px solid var(--line);position:relative;background:var(--panel)}
+.ib .bd{position:absolute;top:-5px;right:-5px;background:var(--bad);color:#fff;font-size:11px;font-weight:700;border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
+.view{flex:1;min-height:0;display:none}.view.on{display:block}
+.inbox{display:grid;grid-template-columns:310px minmax(0,1fr) 300px;height:100%}
+.list{display:flex;flex-direction:column;min-height:0;background:var(--panel);border-right:1px solid var(--line)}
+.lh{padding:14px 16px 10px}
+.lh h2{font-size:16px;margin:0 0 10px}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:0 10px;height:40px;color:var(--mute)}
+.search input{border:0;outline:0;background:none;width:100%;font-size:16px;color:var(--ink)}
+.tabs{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
+.tab{border-radius:99px;padding:5px 11px;font-size:13px;font-weight:500;border:1px solid var(--line);color:var(--mute)}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.rows{overflow:auto;flex:1;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;width:100%;border-left:3px solid transparent}
+.row:hover{background:var(--soft)}.row.on{background:var(--acc2);border-left-color:var(--acc)}
+.row .nm{font-weight:600;font-size:14px;display:flex;gap:6px;align-items:center}
+.row .pv{font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:12px;color:var(--mute);white-space:nowrap}
+.un{background:var(--acc);color:#fff;font-weight:700;border-radius:99px;min-width:20px;height:20px;display:grid;place-items:center;font-size:12px}
+.av{width:40px;height:40px;border-radius:99px;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:none;position:relative}
+.av.s{width:32px;height:32px;font-size:12px}
+.tag{font-size:12px;padding:1px 7px;border-radius:6px;background:var(--soft);border:1px solid var(--line);color:var(--mute)}
+.conv{display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+.ch{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ch .who{margin-right:auto;display:flex;align-items:center;gap:12px}
+.ch .who b{font-size:17px;display:block;line-height:1.2}
+.ch .who .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.sw{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;min-height:40px;padding:0 6px}
+.sw i{width:38px;height:22px;border-radius:99px;background:var(--line);position:relative;transition:.2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:99px;background:#fff;transition:.2s}
+.sw.on i{background:var(--acc)}.sw.on i::after{left:19px}
+.msgs{flex:1;overflow:auto;padding:18px clamp(12px,3vw,28px);display:flex;flex-direction:column;gap:12px}
+.sum{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px}
+.sum h3{margin:0 0 4px;font-size:13px;display:flex;align-items:center;gap:6px;color:var(--accink)}
+.m{max-width:min(78%,560px);display:flex;flex-direction:column;gap:3px}
+.m .lb{font-size:12px;color:var(--mute);display:flex;gap:8px}
+.m .bb{padding:10px 14px;border-radius:14px;font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.m.pt{align-self:flex-start}.m.pt .bb{background:var(--panel);border:1px solid var(--line);border-top-left-radius:4px}
+.m.ai{align-self:flex-end;align-items:flex-end}.m.ai .bb{background:var(--acc2);color:var(--ink);border-top-right-radius:4px}
+.m.st{align-self:flex-end;align-items:flex-end}.m.st .bb{background:var(--acc);color:#fff;border-top-right-radius:4px}
+.m.tp .bb{font-style:italic}
+.sys{align-self:center;font-size:12.5px;color:var(--mute);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:3px 12px;text-align:center}
+.typing{align-self:flex-end;background:var(--acc2);border-radius:14px;padding:12px 16px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:9px;background:var(--accink);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,100%{opacity:.3}50%{opacity:1}}
+.comp{background:var(--panel);border-top:1px solid var(--line);padding:10px 14px 12px}
+.win{font-size:13px;display:flex;align-items:center;gap:6px;color:var(--mute);margin-bottom:8px;flex-wrap:wrap}
+.comp textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;resize:none;height:64px;background:var(--soft);outline:0}
+.comp textarea:focus{border-color:var(--acc)}
+.cb{display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap}.cb .sp{flex:1}
+.pop{position:absolute;bottom:52px;left:0;width:min(340px,86vw);background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px #0003;padding:6px;z-index:5;display:none}
+.pop.on{display:block}
+.pop button{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:8px;font-size:13px}
+.pop button:hover{background:var(--soft)}.pop button b{display:block;font-size:14px}
+.prof{background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+.ph{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--line)}
+.ph b{display:block}.ph span{font-size:13px;color:var(--mute)}
+.ptabs{display:flex;border-bottom:1px solid var(--line)}
+.ptabs button{flex:1;padding:12px;font-weight:600;font-size:14px;color:var(--mute);border-bottom:2px solid transparent}
+.ptabs button.on{color:var(--accink);border-color:var(--acc)}
+.sec{padding:14px 16px;border-bottom:1px solid var(--line)}
+.sec h4{margin:0 0 8px;font-size:13px;color:var(--mute);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:13px;border:1px solid var(--acc);color:var(--accink);background:var(--acc2);border-radius:7px;padding:2px 4px 2px 8px}
+.chip button{width:20px;height:20px;display:grid;place-items:center;border-radius:5px}
+.chip svg.i{width:13px;height:13px}
+select,input[type=date],input[type=text]{border:1px solid var(--line);border-radius:10px;height:40px;padding:0 10px;background:var(--soft);font-size:16px;width:100%}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:14px}.kv dt{color:var(--mute)}.kv dd{margin:0;text-align:right}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;margin-bottom:8px}.note small{display:block;color:var(--mute);font-size:12px}
+.empty{display:grid;place-items:center;height:100%;color:var(--mute);text-align:center;padding:30px}
+#profBtn,#backBtn{display:none}
+.scroll{overflow:auto;height:100%}
+.wrap{max-width:1240px;padding:clamp(18px,3vw,32px) max(3vw,16px)}
+.wrap h2{font-size:clamp(26px,3vw,34px);line-height:1.1;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.lead{color:var(--mute);margin:0 0 20px;max-width:70ch}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(10em,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi span{font-size:13px;color:var(--mute)}.kpi b{display:block;font-size:clamp(24px,3vw,30px);letter-spacing:-.02em;line-height:1.2}.kpi small{font-size:13px;color:var(--ok)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.box h3{margin:0 0 12px;font-size:16px}
+.bar{display:grid;grid-template-columns:minmax(7em,11em) minmax(0,1fr) 3.2em;gap:10px;align-items:center;font-size:14px;margin:7px 0}
+.bar .t{height:14px;border-radius:5px;background:var(--soft);overflow:hidden}.bar .t i{display:block;height:100%;background:var(--acc);border-radius:5px}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.bar .t i.q{background:color-mix(in srgb,var(--acc) 35%,transparent)}
+.heat{display:grid;grid-template-columns:3em repeat(10,minmax(0,1fr));gap:3px;font-size:12px;color:var(--mute)}
+.heat div{height:26px;border-radius:4px;background:var(--acc)}.heat span{display:grid;place-items:center}
+.ins{font-size:15px}.ins p{margin:0 0 8px}
+.qlist .note{display:flex;gap:10px;align-items:flex-start}.qlist .note div{flex:1}
+.set{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}.set p{margin:0;font-size:13px;color:var(--mute)}
+.toast{position:fixed;right:18px;bottom:18px;background:var(--side);color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px #0004;transform:translateY(140%);transition:.3s;z-index:40;max-width:calc(100vw - 36px)}
+.toast.on{transform:none}
+.modal{position:fixed;inset:0;background:#0007;display:none;place-items:center;z-index:50;padding:16px}.modal.on{display:grid}
+.dlg{background:var(--panel);border-radius:16px;padding:20px;width:min(420px,100%)}
+.dlg h3{margin:0 0 4px}.dlg p{margin:0 0 14px;color:var(--mute);font-size:14px}
+.opts{display:grid;gap:8px;margin-bottom:14px}
+.opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;text-align:left}
+.opt.on{border-color:var(--acc);background:var(--acc2)}
+.hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+.adref{font-size:13px;background:var(--acc2);color:var(--accink);border-radius:8px;padding:6px 9px;margin-top:8px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+.tbl th{text-align:left;font-size:13px;color:var(--mute);font-weight:600;padding:10px 12px;background:var(--soft);border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td.r,.tbl th.r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:0}.tbl tr.tot td{font-weight:700;background:var(--soft)}
+.tbl input{height:36px;width:8em;text-align:right;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:16px;background:#fff}
+.sv{display:grid;grid-template-columns:minmax(8em,13em) minmax(0,1fr);gap:4px 12px;align-items:center;font-size:14px;margin:10px 0}
+.sv .t{display:grid;gap:3px}.sv .t i{display:block;height:12px;border-radius:4px;white-space:nowrap}
+.sv .t i.s{background:#c9cbd6}.sv .t i.v{background:var(--acc)}
+.sv small{font-size:12px;color:var(--mute)}
+.lg{display:flex;gap:14px;font-size:13px;color:var(--mute);margin-bottom:4px}.lg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+.form3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+@media(max-width:700px){.form3{grid-template-columns:1fr}}
+.sample{font-size:13px;color:var(--mute);margin-top:16px}
+@media(max-width:1200px){.inbox{grid-template-columns:280px minmax(0,1fr)}.prof{display:none;position:fixed;top:0;right:0;bottom:0;width:min(340px,92vw);z-index:30;box-shadow:-10px 0 30px #0003}.app.sp .prof{display:block}#profBtn,#pX{display:inline-grid}}
+@media(max-width:920px){.app{grid-template-columns:68px minmax(0,1fr)}.side .tx,.card,.num,.me div,.brand span{display:none}.nav{justify-content:center;padding:10px}.nav .n{position:absolute;margin:0;transform:translate(14px,-12px);font-size:11px}.nav{position:relative}.grid2{grid-template-columns:1fr}}
+@media(max-width:700px){.app{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.side{flex-direction:row;padding:8px;overflow-x:auto;gap:4px;align-items:center}.nav{width:auto;flex:none;min-width:48px}.brand{padding:0 6px 0 2px}.me{display:none}.inbox{grid-template-columns:1fr}.app.op .list{display:none}.app:not(.op) .conv{display:none}#backBtn{display:inline-grid}.top{padding:10px 14px}.top h1{font-size:20px}.top .btn .tx{display:none}.m{max-width:88%}.ch{padding:10px 12px}.bar{grid-template-columns:7em minmax(0,1fr) 3em}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side">
+    <div class="brand"><div class="logo" id="lg"></div><span>URO-CARE Inbox</span></div>
+    <button class="nav on" data-v="inbox"></button>
+    <button class="nav" data-v="analytics"></button>
+    <button class="nav" data-v="ads"></button>
+    <button class="nav" data-v="replies"></button>
+    <button class="nav" data-v="settings"></button>
+    <div class="card"><span>Messages sent today</span><b id="msgCount">312 / 1,000</b><div class="meter"><i id="msgBar" style="width:31%"></i></div><span>Quality rating</span> <span class="pill p-ok"><span class="dot"></span>Green</span></div>
+    <div class="num"><div class="wa" id="waI"></div><div><b style="color:#fff;display:block">URO-CARE</b>+254 112 288 709</div></div>
+    <div class="me"><div class="av s" style="background:#8b5cf6">WM</div><div><b>Wanjiku M.</b>Reception</div></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <button class="ib" id="backBtn" aria-label="Back to chats"></button>
+      <h1 id="title">Chats</h1>
+      <button class="ib" id="bell" aria-label="Chats waiting for reception"></button>
+      <button class="ib" id="profBtn" aria-label="Patient profile"></button>
+      <button class="btn b1" id="simBtn"></button>
+    </header>
+    <section class="view on" id="v-inbox">
+      <div class="inbox">
+        <div class="list">
+          <div class="lh"><h2 id="listCount">Active chats</h2><label class="search"><span id="sI"></span><input id="q" type="text" placeholder="Search patients or messages" aria-label="Search"></label></div>
+          <div class="tabs" id="tabs"></div>
+          <div class="rows" id="rows"></div>
+        </div>
+        <div class="conv" id="conv"></div>
+        <aside class="prof" id="prof"></aside>
+      </div>
+    </section>
+    <section class="view" id="v-analytics"><div class="scroll"><div class="wrap" id="ana"></div></div></section>
+    <section class="view" id="v-ads"><div class="scroll"><div class="wrap" id="ads"></div></div></section>
+    <section class="view" id="v-replies"><div class="scroll"><div class="wrap" id="qr"></div></div></section>
+    <section class="view" id="v-settings"><div class="scroll"><div class="wrap" id="cfg"></div></div></section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="dlg" id="dlg"></div></div>
+<script>
+{
+const P={inbox:'M3 12h5l2 3h4l2-3h5M5 5h14l2 7v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6z',analytics:'M4 20V11M10 20V5M16 20v-6M21 20H3',ads:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',replies:'M13 2 4 14h7l-1 8 9-12h-7z',settings:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4',send:'M22 2 11 13M22 2l-7 20-4-9-9-4z',search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',ai:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z',user:'M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z',check:'M20 6 9 17l-5-5',back:'M15 18l-6-6 6-6',clock:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2',plus:'M12 5v14M5 12h14',x:'M18 6 6 18M6 6l12 12',bell:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0',play:'M7 4l13 8-13 8z',flag:'M5 22V4s1-1 4-1 5 2 8 2 3-1 3-1v11s-1 1-3 1-5-2-8-2-4 1-4 1',chat:'M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5.1A8 8 0 1 1 21 12z',hand:'M7 11V6a2 2 0 0 1 4 0v4M11 10V4a2 2 0 0 1 4 0v6M15 10V6a2 2 0 0 1 4 0v8a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.4L3 14a2 2 0 0 1 3.4-2L7 13',cross:'M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z'};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24"><path d="${P[n]}"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const now=()=>Date.now(),base=now(),ago=m=>base-m*60000;
+const H24=864e5;
+const tm=t=>new Date(t).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+const rel=t=>{const m=Math.round((now()-t)/6e4);return m<1?'Just now':m<60?m+'m':m<1440?Math.round(m/60)+'h':'Yesterday'};
+const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return `hsl(${h} 45% 48%)`};
+const ini=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('');
+const av=(n,c='')=>`<div class="av ${c}" style="background:${hue(n)}">${esc(ini(n))}</div>`;
+const STAFF='Wanjiku (Reception)';
+const cfg={ai:true,book:true,strip:true,hours:false};
+const unanswered=['Do you do vasectomy reversal?','Can I pay in M-Pesa instalments?','Is there parking at the clinic?'];
+const qr=[{t:'Consultation fee',x:'A consultation with the urologist is KES 4,000.'},{t:'Opening hours',x:'We are open Monday to Friday 9:00 am to 5:00 pm and Saturday 10:00 am to 3:00 pm. We are closed on Sundays.'},{t:'Bring your scans',x:'Please bring any previous scans, lab results and a list of the medicines you take.'},{t:'Booking confirmed',x:'Your appointment is confirmed. Reply here if you need to change the time.'},{t:'Translator welcome',x:'You are welcome to bring a family member to help translate. Some of our team also speak Somali.'}];
+const KB=[
+ {r:/(how much|cost|price).*(eswl|stone)|(eswl|stone).*(how much|cost|price)/,t:'Kidney stones',a:'The cost of ESWL depends on the size and position of the stone, so the doctor confirms it after reviewing your scan. Would you like to book a consultation?'},
+ {r:/price|cost|how much|charge|fee/,t:'Consultation price',a:'A consultation with the urologist is KES 4,000. Treatment costs depend on what the doctor recommends after assessing you.'},
+ {r:/eswl|shock|stone/,t:'Kidney stones',a:'Yes, we treat kidney stones, including ESWL (shock wave lithotripsy). It breaks stones from outside the body with no cuts, and most patients go home the same day. The doctor first reviews your scan at a consultation (KES 4,000).'},
+ {r:/prostate|rez/,t:'Prostate',a:'Yes. For an enlarged prostate we offer Rezūm water vapour therapy, a minimally invasive option done without major surgery, as well as other treatments. The urologist will advise which suits you after a consultation.'},
+ {r:/pain|hurt/,t:'',a:'Most procedures here use local anaesthetic or sedation to keep you comfortable. The doctor will explain what to expect for your treatment at the consultation.'},
+ {r:/hour|open|close|saturday|sunday|time/,t:'Hours & location',a:'We are open Monday to Friday 9:00 am to 5:00 pm and Saturday 10:00 am to 3:00 pm. We are closed on Sundays.'},
+ {r:/insur|sha|nhif|cover/,t:'Insurance',a:'Reception will confirm whether your insurer is accepted. Please reply with the name of your insurance provider.'},
+ {r:/child|son|daughter|bed ?wet|enuresis/,t:'Paediatric',a:'Yes, we see children. Bedwetting (nocturnal enuresis) is common and treatable. Our paediatric urology service assesses the cause and agrees a plan with you as parents.'},
+ {r:/circumcis/,t:'Circumcision',a:'Yes, we offer circumcision for adults and children, done by our urologists. The doctor will explain the procedure and recovery at a consultation.'},
+ {r:/hydrocele|swelling|scrot/,t:'Hydrocele',a:'We assess and treat hydrocele and other scrotal swellings. The doctor will examine you and may request an ultrasound before advising on treatment.'},
+ {r:/men'?s health|erect|private|andrology/,t:"Men's health",a:"Yes. Conversations here are private and handled only by our clinical team. Our andrology service covers men's health concerns, including erectile difficulties. You can describe what's going on, or book a private consultation."},
+ {r:/where|location|direction|map/,t:'Hours & location',a:'We are URO-CARE Urology & Andrology Center in Nairobi. Reception will send you the map pin and directions.'},
+ {r:/^(hi|hello|salaan|habari|good (morning|afternoon))/,t:'',a:'Hello, welcome to URO-CARE. I am the clinic\'s automated assistant. You can ask about our services, prices or opening hours, or type "reception" to talk to our team.'},
+ {r:/thank|^ok|okay|sawa/,t:'',a:'You are welcome. Reply any time if you have another question.'}];
+const M=(f,x,m,n)=>({f,x,t:ago(m),n});
+let chats=[
+ {id:'c1',name:'Amina Hassan',ph:'+254 7•• ••• 412',lang:'Somali, English',src:'Meta Ads',camp:'m1',auto:true,adHead:'Kidney stones? Treatment without surgery',st:'rec',bot:false,tags:['Kidney stones','New patient'],lead:'Interested',intent:'Kidney stones',reason:'wants to book',un:1,notes:[{x:'Brother will translate. Prefers Saturday morning.',by:'Wanjiku',t:ago(3)}],msgs:[M('p','Salaan. I have kidney stones, my scan shows 8mm. Do you do the shock wave treatment?',26),M('a',KB[2].a,26),M('p','How much is ESWL itself?',22),M('a',KB[0].a,22),M('p','Yes please, can I come Saturday with my brother? He will translate.',4),M('a','Of course, family are welcome. I am passing you to our reception team to confirm a Saturday time.',4),M('s','Handed to reception · wants to book',4)]},
+ {id:'c2',name:'Daniel Kamau',ph:'+254 7•• ••• 038',lang:'English',src:'Direct',st:'rec',bot:false,urgent:true,tags:['Post-procedure'],lead:'Attended',intent:'Urgent symptoms',reason:'urgent symptoms',un:2,notes:[],msgs:[M('p','I had a procedure here last week and since morning I cannot pass urine. It is very painful.',9),M('a','I am sorry you are going through this. Not being able to pass urine needs urgent care. Please call the clinic now, or go to the nearest emergency department if you cannot reach us. I have alerted our team.',9),M('s','Flagged urgent · handed to reception',9)]},
+ {id:'c3',name:'Peter Mwangi',ph:'+254 7•• ••• 771',lang:'English',src:'Website',st:'ai',bot:true,tags:['Prostate'],lead:'Interested',intent:'Prostate',un:0,notes:[],msgs:[M('p','Do you treat enlarged prostate without surgery?',14),M('a',KB[3].a,14),M('p','Is it painful? I am 64.',3),M('a',KB[4].a,3)]},
+ {id:'c4',name:'Brian Kiprop',ph:'+254 7•• ••• 905',lang:'English',src:'Meta Ads',camp:'m2',auto:true,adHead:'Private men\'s health consultations',st:'ai',bot:true,tags:["Men's health"],lead:'New',intent:"Men's health",un:0,notes:[],msgs:[M('p','Is it possible to talk privately about a men\'s health issue?',35),M('a',KB[10].a,35),M('p','What are your hours?',31),M('a',KB[5].a,31)]},
+ {id:'c8',name:'Mary Achieng',ph:'+254 7•• ••• 260',lang:'English',src:'Direct',st:'rec',bot:false,tags:['Results'],lead:'Attended',intent:'Results request',reason:'results request',un:1,notes:[],msgs:[M('p','Can you send me my lab results here?',48),M('a','For your privacy, the assistant does not share results. I have passed you to reception, who will verify your details first.',48),M('s','Handed to reception · results request',48)]},
+ {id:'c5',name:'Grace Wanjiru',ph:'+254 7•• ••• 117',lang:'English',src:'Website',st:'closed',bot:true,tags:['Paediatric'],lead:'Follow-up',intent:'Paediatric',outcome:'Follow up',fu:'2026-12-01',un:0,notes:[{x:'Mum wants to discuss with husband first. Call back Monday.',by:'Wanjiku',t:ago(60)}],msgs:[M('p','My son is 8 and still wets the bed. Do you see children?',70),M('a',KB[7].a,70),M('p','Okay, I will think about it.',62),M('a',KB[13].a,62),M('s','Ended by Wanjiku · Follow up',58)]},
+ {id:'c6',name:'James Otieno',ph:'+254 7•• ••• 583',lang:'English',src:'Direct',st:'closed',bot:true,tags:['Returning'],lead:'Attended',intent:'Booking',outcome:'Booked',paid:4000,un:0,notes:[],msgs:[M('p','Hello, confirming my appointment on Tuesday at 10 am.',180),M('t','Hi James, confirmed for Tuesday 10:00 am with the urologist. Please bring any previous scans.',175,STAFF),M('s','Ended by Wanjiku · Booked',170)]},
+ {id:'c9',name:'Mohamed Ali',ph:'+254 7•• ••• 664',lang:'Somali, English',src:'Meta Ads',camp:'m1',auto:true,adHead:'Kidney stones? Treatment without surgery',st:'closed',bot:true,tags:['Kidney stones'],lead:'Attended',intent:'Kidney stones',outcome:'Booked',un:0,notes:[{x:'Came in today for ESWL review. Amount still to be entered.',by:'Wanjiku',t:ago(40)}],msgs:[M('s','Came from Meta ad · Kidney stones · Nov',300),M('p','I saw your advert. I want to book for kidney stone treatment.',300),M('a','Great, I will get our reception team to confirm a time with you. Which day suits you?',300),M('s','Handed to reception · wants to book',300),M('t','Hi Mohamed, you are booked for today at 11:00 am. Please bring your scan.',290,STAFF),M('s','Ended by Wanjiku · Booked',285)]},
+ {id:'c7',name:'Hassan Omar',ph:'+254 7•• ••• 349',lang:'Somali, English',src:'Google Ads',camp:'g1',st:'closed',bot:true,tags:['Consultation'],lead:'New',intent:'Consultation price',outcome:'Price enquiry only',un:0,notes:[],msgs:[M('p','How much is consultation?',1600),M('a',KB[1].a,1600),M('p','ok thanks',1590),M('a',KB[13].a,1590),M('s','Ended by Wanjiku · Price enquiry only',1500)]}];
+const camps=[{id:'m1',name:'Kidney stones · Nov',src:'Meta Ads',spend:20000,b:[44,11,8,58000]},{id:'m2',name:"Men's health · Nov",src:'Meta Ads',spend:8000,b:[21,4,3,15000]},{id:'g1',name:'Prostate & stones search',src:'Google Ads',spend:15000,b:[30,9,7,46000]}];
+const SRC=['Meta Ads','Google Ads','Website','Direct','Referral','Walk-in'],isAd=s=>s==='Meta Ads'||s==='Google Ads';
+const campName=c=>camps.find(m=>m.id===c.camp)?.name||'None';
+const booked=c=>c.outcome==='Booked'||c.lead==='Booked'||c.lead==='Attended';
+const KES=n=>'KES '+Math.round(n).toLocaleString('en-US');
+const S={v:'inbox',f:'all',q:'',cur:'c1',pt:'profile',draft:false};
+const sims=[{n:'Kevin Ouma',s:'Meta Ads',c:'m1',h:'Kidney stones? Treatment without surgery',x:'I want to book an appointment for kidney stones'},{n:'Lucy Njeri',s:'Website',x:'What time do you open on Saturday?'},{n:'Abdirahman Yusuf',s:'Meta Ads',c:'m2',h:'Private men\'s health consultations',x:'Hello, do you do circumcision for adults?'},{n:'Ali Noor',s:'Meta Ads',c:'m1',h:'Kidney stones? Treatment without surgery',x:'There is blood in my urine since yesterday'},{n:'Samuel Kibet',s:'Google Ads',c:'g1',x:'Do you accept SHA cover?'},{n:'Joseph Mutua',s:'Direct',x:'Can I get a sick note for work?'}];
+let si=0;
+const cur=()=>chats.find(c=>c.id===S.cur);
+const lastP=c=>{for(let i=c.msgs.length-1;i>=0;i--)if(c.msgs[i].f==='p')return c.msgs[i].t;return 0};
+const score=c=>{if(c.urgent)return['Urgent','p-bad'];const t=c.msgs.filter(m=>m.f==='p').map(m=>m.x.toLowerCase()).join(' ');if(/book|appointment|saturday|how much|cost|price|come/.test(t))return['Hot','p-warn'];if(c.intent&&c.intent!=='General')return['Warm','p-ai'];return['Cold','p-mute']};
+const stP=c=>c.st==='rec'?(c.urgent?'<span class="pill p-bad"><span class="dot"></span>Urgent</span>':'<span class="pill p-warn"><span class="dot"></span>Needs reception</span>'):c.st==='ai'?'<span class="pill p-ai">'+ic('ai')+'AI handling</span>':'<span class="pill p-mute">Closed</span>';
+const summary=c=>{const f=c.name.split(' ')[0];const n=c.msgs.filter(m=>m.f==='a').length;let s=`${f} asked about ${(c.intent||'general questions').toLowerCase()}. The assistant answered ${n} message${n===1?'':'s'}.`;if(c.reason&&c.st==='rec')s+=` Handed to reception: ${c.reason}.`;if(c.urgent)s+=' Urgent: reply or call first.';if(c.outcome)s+=` Ended as ${c.outcome.toLowerCase()}.`;if(c.lang.includes('Somali'))s+=' Speaks Somali.';return s};
+function toast(h){const t=$('toast');t.innerHTML=h;t.classList.add('on');clearTimeout(toast.k);toast.k=setTimeout(()=>t.classList.remove('on'),3200)}
+function counts(){const r=chats.filter(c=>c.st==='rec').length;$('bell').innerHTML=ic('bell')+(r?`<span class="bd">${r}</span>`:'');document.querySelector('[data-v=inbox] .n').textContent=r;$('listCount').textContent=`Active chats · ${chats.filter(c=>c.st!=='closed').length}`}
+function nav(){const L={inbox:'Chats',analytics:'Analytics',ads:'Ad tracking',replies:'Quick replies',settings:'AI settings'};document.querySelectorAll('.nav').forEach(b=>{const v=b.dataset.v;b.innerHTML=ic(v)+`<span class="tx">${L[v]}</span>`+(v==='inbox'?'<span class="n">0</span>':'');b.classList.toggle('on',v===S.v);b.onclick=()=>go(v)})}
+function go(v){S.v=v;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));$('title').textContent={inbox:'Chats',analytics:'Analytics',replies:'Quick replies',settings:'AI settings'}[v]||'Ad tracking';document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('profBtn').style.visibility=v==='inbox'?'':'hidden';if(v==='analytics')ana();if(v==='ads')adsv();if(v==='replies')qrv();if(v==='settings')cfgv()}
+function tabs(){const F=[['all','All'],['rec','Needs reception'],['ai','AI handling'],['closed','Closed']];$('tabs').innerHTML=F.map(([k,l])=>{const n=k==='all'?chats.length:chats.filter(c=>c.st===k).length;return `<button class="tab ${S.f===k?'on':''}" data-f="${k}">${l} ${n}</button>`}).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.f=b.dataset.f;tabs();list()})}
+function list(){const q=S.q.toLowerCase();const L=chats.filter(c=>(S.f==='all'||c.st===S.f)&&(!q||c.name.toLowerCase().includes(q)||c.msgs.some(m=>m.x.toLowerCase().includes(q)))).sort((a,b)=>(b.st==='rec')-(a.st==='rec')||(b.urgent?1:0)-(a.urgent?1:0)||b.msgs.at(-1).t-a.msgs.at(-1).t);
+$('rows').innerHTML=L.length?L.map(c=>{const lm=[...c.msgs].reverse().find(m=>m.f!=='s')||c.msgs.at(-1);const pre=lm.f==='a'?'AI: ':lm.f==='t'?'You: ':'';return `<button class="row ${c.id===S.cur?'on':''}" data-id="${c.id}">${av(c.name)}<div><div class="nm">${esc(c.name)}${c.urgent?'<span class="pill p-bad" style="padding:0 7px">Urgent</span>':''}</div><div class="pv">${esc(pre+lm.x)}</div><div style="margin-top:5px">${stP(c)}</div></div><div class="meta">${rel(c.msgs.at(-1).t)}${c.un?`<span class="un">${c.un}</span>`:''}</div></button>`}).join(''):'<div class="empty">No chats match.</div>';
+$('rows').querySelectorAll('.row').forEach(b=>b.onclick=()=>{S.cur=b.dataset.id;const c=cur();c.un=0;S.draft=false;$('app').classList.add('op');render()})}
+function win(c){const r=H24-(now()-lastP(c));if(r<=0)return{open:false,h:`<span class="pill p-bad">${ic('clock')}Reply window closed</span> Free text is blocked by WhatsApp. Send an approved template.`};const h=Math.floor(r/36e5),m=Math.floor(r%36e5/6e4);return{open:true,h:`<span class="pill p-ok">${ic('clock')}${h}h ${m}m left</span> to reply freely`}}
+function conv(){const c=cur();if(!c){$('conv').innerHTML='<div class="empty">Select a chat</div>';return}const w=win(c);
+const mm=c.msgs.map(m=>m.f==='s'?`<div class="sys">${esc(m.x)} · ${tm(m.t)}</div>`:m.f==='p'?`<div class="m pt"><div class="lb">${esc(c.name)} · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`:m.f==='a'?`<div class="m ai"><div class="lb">${ic('ai')} AI assistant · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`:`<div class="m st ${m.tp?'tp':''}"><div class="lb">${esc(m.n||STAFF)}${m.tp?' · template':''} · ${tm(m.t)}</div><div class="bb">${esc(m.x)}</div></div>`).join('');
+$('conv').innerHTML=`<div class="ch"><div class="who">${av(c.name)}<div><b>${esc(c.name)}</b><div class="pills">${stP(c)}<span class="pill p-mute">${esc(c.src)}</span></div></div></div>
+<button class="sw ${c.bot&&c.st!=='closed'?'on':''}" id="botSw" ${c.st==='closed'?'disabled':''} aria-pressed="${c.bot}"><i></i>AI replies</button>
+${c.st==='closed'?`<button class="btn b2" id="reopen">${ic('chat')}Reopen</button>`:c.bot?`<button class="btn b2" id="take">${ic('hand')}Take over</button>`:`<button class="btn b2" id="hand">${ic('ai')}Hand back to AI</button>`}
+${c.st!=='closed'?`<button class="btn b1" id="end">${ic('check')}Mark as ended</button>`:''}</div>
+<div class="msgs" id="msgs"><div class="sum"><h3>${ic('ai')}AI summary</h3>${esc(summary(c))}</div>${mm}${c.typing?'<div class="typing"><i></i><i></i><i></i></div>':''}</div>
+<div class="comp"><div class="win">${w.h}</div>${w.open?`<textarea id="tx" placeholder="${c.bot&&c.st!=='closed'?'Typing here takes over from the AI':'Write a reply'}" aria-label="Reply"></textarea>
+<div class="cb" style="position:relative"><button class="btn b3" id="qrb">${ic('replies')}Quick replies</button><button class="btn b3" id="drf">${ic('ai')}AI draft</button><div class="pop" id="pop">${qr.map((q,i)=>`<button data-i="${i}"><b>${esc(q.t)}</b>${esc(q.x)}</button>`).join('')}</div><span class="sp"></span><button class="btn b2" id="asP" title="Send this text as if the patient wrote it">${ic('user')}<span>Test as patient</span></button><button class="btn b1" id="snd">${ic('send')}Send</button></div>`:`<div class="cb"><button class="btn b1" id="tpl">${ic('send')}Send follow-up template</button><span class="sp"></span><button class="btn b2" id="asP2">${ic('user')}Patient replies</button></div>`}</div>`;
+const ms=$('msgs');ms.scrollTop=ms.scrollHeight;
+const B=(id,f)=>{const e=$(id);if(e)e.onclick=f};
+B('botSw',()=>{c.bot?takeover(c,'AI switched off'):handback(c)});B('take',()=>takeover(c,'taken over'));B('hand',()=>handback(c));B('reopen',()=>{c.st='ai';c.bot=true;c.outcome=null;sys(c,'Reopened by Wanjiku');render()});B('end',()=>endDlg(c));
+B('qrb',e=>{e.stopPropagation();$('pop').classList.toggle('on')});$('pop')?.querySelectorAll('button').forEach(b=>b.onclick=()=>{$('tx').value=qr[b.dataset.i].x;$('pop').classList.remove('on');$('tx').focus()});
+B('drf',()=>{$('tx').value=draft(c);$('tx').focus();toast(ic('ai')+'AI drafted a reply. Edit it before sending.')});
+B('snd',()=>{const v=$('tx').value.trim();if(!v)return;if(c.bot&&c.st!=='closed')takeover(c,'reception replied',true);if(c.st==='closed'){c.st='rec';c.outcome=null}c.msgs.push({f:'t',x:v,t:now(),n:STAFF});bump();render()});
+B('asP',()=>{const v=$('tx').value.trim();if(!v){$('tx').placeholder='Type what the patient would say, then press Test as patient';$('tx').focus();return}incoming(c,v)});
+B('asP2',()=>incoming(c,'Hi, I am still interested. Can I book?'));
+B('tpl',()=>{c.msgs.push({f:'t',x:`Hello ${c.name.split(' ')[0]}, this is URO-CARE following up on your enquiry. Reply to this message if you would like to continue or book a consultation.`,t:now(),n:STAFF,tp:true});bump();render();toast(ic('check')+'Template sent. The window reopens when the patient replies.')});
+const tx=$('tx');if(tx)tx.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('snd').click()}}}
+function prof(){const c=cur();if(!c){$('prof').innerHTML='';return}const [sc,cl]=score(c);const T=['Kidney stones','Prostate',"Men's health",'Circumcision','Paediatric','Hydrocele','New patient','Returning','Results','Insurance','Post-procedure'].filter(t=>!c.tags.includes(t));
+const past=chats.filter(x=>x.outcome).slice(0,4);
+$('prof').innerHTML=`<div class="ph">${av(c.name)}<div style="flex:1"><b>${esc(c.name)}</b><span>${esc(c.ph)}</span></div><button class="ib" id="pX" aria-label="Close profile">${ic('x')}</button></div>
+<div class="ptabs"><button class="${S.pt==='profile'?'on':''}" data-t="profile">Profile</button><button class="${S.pt==='notes'?'on':''}" data-t="notes">Notes ${c.notes.length||''}</button></div>
+${S.pt==='profile'?`<div class="sec"><h4>Lead score (AI)</h4><span class="pill ${cl}">${sc}</span> <span style="font-size:13px;color:var(--mute)">from what the patient has asked</span></div>
+<div class="sec"><h4>Lead status</h4><select id="lead">${['New','Interested','Booked','Attended','Follow-up'].map(l=>`<option ${l===c.lead?'selected':''}>${l}</option>`).join('')}</select></div>
+<div class="sec"><h4>Tags</h4><div class="chips">${c.tags.map((t,i)=>`<span class="chip">${esc(t)}<button data-i="${i}" aria-label="Remove ${esc(t)}">${ic('x')}</button></span>`).join('')}</div><select id="addTag" style="margin-top:10px"><option value="">Add tag</option>${T.map(t=>`<option>${esc(t)}</option>`).join('')}</select></div>
+<div class="sec"><h4>Where they came from</h4><select id="src" aria-label="Source">${SRC.map(s=>`<option ${s===c.src?'selected':''}>${s}</option>`).join('')}</select>${isAd(c.src)?`<select id="camp" style="margin-top:8px" aria-label="Campaign">${camps.filter(m=>m.src===c.src).map(m=>`<option value="${m.id}" ${m.id===c.camp?'selected':''}>${esc(m.name)}</option>`).join('')}</select>`:''}${c.auto?`<div class="adref">Auto-detected from the ad click: "${esc(c.adHead)}"</div>`:'<p class="hint">Reception: ask the patient how they heard about us.</p>'}<h4 style="margin-top:14px">Amount paid (KES)</h4><div style="display:flex;gap:8px"><input type="text" inputmode="numeric" id="paid" value="${c.paid||''}" placeholder="Enter after the visit" aria-label="Amount paid in KES"><button class="btn b1" id="savePaid">Save</button></div>${!c.paid&&booked(c)&&isAd(c.src)?'<p class="hint" style="color:var(--warn)">Booked from an ad, amount not entered yet.</p>':''}</div>
+<div class="sec"><dl class="kv"><dt>Detected topic</dt><dd>${esc(c.intent||'General')}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd><dt>Campaign</dt><dd>${esc(campName(c))}</dd><dt>Outcome</dt><dd>${esc(c.outcome||'Open')}</dd></dl></div>
+<div class="sec"><h4>Recent outcomes (all chats)</h4>${past.map(x=>`<div class="kv" style="margin-bottom:4px"><dt>${esc(x.name)}</dt><dd><span class="pill ${x.outcome==='Booked'?'p-ok':'p-mute'}">${esc(x.outcome)}</span></dd></div>`).join('')}</div>`
+:`<div class="sec"><h4>Follow-up reminder</h4><input type="date" id="fu" value="${c.fu||''}" aria-label="Follow-up date"></div><div class="sec"><h4>Internal notes (patient never sees these)</h4>${c.notes.map(n=>`<div class="note">${esc(n.x)}<small>${esc(n.by)} · ${rel(n.t)}</small></div>`).join('')||'<p style="color:var(--mute);font-size:14px;margin:0 0 8px">No notes yet.</p>'}<textarea id="nt" style="width:100%;height:70px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--soft);font-size:16px" placeholder="Add a note" aria-label="New note"></textarea><button class="btn b1" id="addN" style="margin-top:8px">${ic('plus')}Add note</button></div>`}`;
+$('pX').onclick=()=>$('app').classList.remove('sp');
+$('prof').querySelectorAll('.ptabs button').forEach(b=>b.onclick=()=>{S.pt=b.dataset.t;prof()});
+const sr=$('src');if(sr)sr.onchange=()=>{c.src=sr.value;c.auto=false;c.camp=isAd(c.src)?(camps.find(m=>m.src===c.src)?.id||null):null;prof();conv()};
+const cp=$('camp');if(cp)cp.onchange=()=>{c.camp=cp.value};
+const sp=$('savePaid');if(sp)sp.onclick=()=>{const v=parseInt($('paid').value.replace(/[^0-9]/g,''),10)||0;c.paid=v;if(v>0)c.lead='Attended';prof();toast(ic('check')+(v?'Saved '+KES(v)+' for '+esc(c.name.split(' ')[0])+'. Ad tracking updated.':'Amount cleared.'))};
+const ld=$('lead');if(ld)ld.onchange=()=>{c.lead=ld.value;toast(ic('check')+'Lead status set to '+esc(ld.value))};
+const at=$('addTag');if(at)at.onchange=()=>{if(at.value){c.tags.push(at.value);prof()}};
+$('prof').querySelectorAll('.chip button').forEach(b=>b.onclick=()=>{c.tags.splice(+b.dataset.i,1);prof()});
+const fu=$('fu');if(fu)fu.onchange=()=>{c.fu=fu.value;toast(ic('bell')+'Reminder set for '+esc(fu.value))};
+const an=$('addN');if(an)an.onclick=()=>{const v=$('nt').value.trim();if(v){c.notes.push({x:v,by:'Wanjiku',t:now()});prof()}}}
+function render(){counts();tabs();list();conv();prof()}
+function sys(c,x){c.msgs.push({f:'s',x,t:now()})}
+function bump(){const b=$('msgBar'),n=313+chats.reduce((a,c)=>a+c.msgs.filter(m=>m.t>base&&m.f!=='p'&&m.f!=='s').length,0);$('msgCount').textContent=n.toLocaleString()+' / 1,000';b.style.width=n/10+'%'}
+function takeover(c,why,quiet){c.bot=false;c.st='rec';sys(c,'Wanjiku took over · AI paused');if(!quiet){render();toast(ic('hand')+'You took over. The AI will stay quiet in this chat.')}}
+function handback(c){c.bot=true;c.st='ai';c.urgent=false;sys(c,'Handed back to the AI assistant');render();toast(ic('ai')+'The AI assistant is answering this chat again.')}
+function handoff(c,why,urg){c.bot=false;c.st='rec';c.reason=why;if(urg)c.urgent=true;sys(c,(urg?'Flagged urgent · ':'')+'Handed to reception · '+why);if(c.id!==S.cur)c.un++;toast(ic('bell')+`<span><b>${esc(c.name)}</b> needs reception: ${esc(why)}</span>`)}
+function endDlg(c){const O=['Booked','Price enquiry only','Follow up','Not interested','Wrong number'];let pick='Booked';const d=$('dlg');
+const draw=()=>{d.innerHTML=`<h3>Mark chat as ended</h3><p>Pick the outcome. It feeds the analytics and the AI lead analyzer.</p><div class="opts">${O.map(o=>`<button class="opt ${o===pick?'on':''}" data-o="${o}">${o===pick?ic('check'):'<span style="width:18px"></span>'}${o}</button>`).join('')}</div><div class="cb"><span class="sp"></span><button class="btn b2" id="cx">Cancel</button><button class="btn b1" id="ok">End chat</button></div>`;
+d.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{pick=b.dataset.o;draw()});$('cx').onclick=()=>$('modal').classList.remove('on');$('ok').onclick=()=>{c.st='closed';c.bot=true;c.urgent=false;c.outcome=pick;if(pick==='Booked')c.lead='Booked';if(pick==='Follow up')c.lead='Follow-up';sys(c,'Ended by Wanjiku · '+pick);$('modal').classList.remove('on');render();toast(ic('check')+'Chat ended as '+pick)}};
+draw();$('modal').classList.add('on')}
+function draft(c){const f=c.name.split(' ')[0];const last=[...c.msgs].reverse().find(m=>m.f==='p')?.x.toLowerCase()||'';if(c.urgent)return `Hi ${f}, this is Wanjiku from URO-CARE reception. We are calling you now. If you cannot pick up, please go to the nearest emergency department.`;if(/book|saturday|come|appointment/.test(last))return `Hi ${f}, this is Wanjiku from URO-CARE. We have Saturday slots at 10:30 am and 12:00 pm. Which suits you best?`;if(/result/.test(last))return `Hi ${f}, this is Wanjiku from URO-CARE. To protect your privacy, please confirm your full name and date of birth, and we will arrange your results with the doctor.`;const k=KB.find(k=>k.t&&k.r.test(last));return `Hi ${f}, this is Wanjiku from URO-CARE reception. `+(k?k.a:'Thank you for your message. How can we help you today?')}
+function aiAnswer(c,text){const l=text.toLowerCase();
+ if(/blood|bleed|can'?t pass|cannot pass|unable to pass|severe pain|fever/.test(l)){c.intent='Urgent symptoms';c.msgs.push({f:'a',x:'I am sorry you are dealing with this. These symptoms need a doctor soon. Please call the clinic now, or go to the nearest emergency department if it is severe. I have alerted our team.',t:now()});handoff(c,'urgent symptoms',true);return}
+ if(/result|report|lab/.test(l)){c.msgs.push({f:'a',x:'For your privacy, the assistant does not share results. I have passed you to reception, who will verify your details first.',t:now()});handoff(c,'results request');return}
+ if(/reception|human|person|talk to|call me|agent/.test(l)){c.msgs.push({f:'a',x:'Sure, I am passing you to our reception team now.',t:now()});handoff(c,'asked for a person');return}
+ if(cfg.book&&/book|appointment|slot|see (the )?doctor/.test(l)){const k=KB.find(k=>k.t&&k.r.test(l));if(k)c.intent=k.t;c.msgs.push({f:'a',x:'Great, I will get our reception team to confirm a time with you. Which day suits you?',t:now()});handoff(c,'wants to book');return}
+ const k=KB.find(k=>k.r.test(l));if(k){if(k.t)c.intent=k.t;c.msgs.push({f:'a',x:k.a,t:now()});if(k.t==='Insurance')handoff(c,'insurance check');return}
+ if(!unanswered.includes(text))unanswered.unshift(text);c.msgs.push({f:'a',x:'I am not sure about that one, so I have passed your question to our reception team.',t:now()});handoff(c,'AI could not answer')}
+function incoming(c,text){c.msgs.push({f:'p',x:text,t:now()});if(c.st==='closed'){c.st='ai';c.bot=true;c.outcome=null;sys(c,'Patient wrote again · chat reopened')}if(c.id!==S.cur)c.un++;
+ if(!cfg.ai){if(c.st!=='rec')handoff(c,'AI is switched off');render();return}
+ if(!c.bot){toast(ic('chat')+`<span><b>${esc(c.name)}</b>: ${esc(text)}</span>`);render();return}
+ c.typing=true;render();setTimeout(()=>{c.typing=false;aiAnswer(c,text);bump();render()},1200)}
+function simulate(){const s=sims[si++%sims.length];const id='n'+now();const c={id,name:s.n,ph:'+254 7•• ••• '+String(100+Math.floor(Math.random()*899)),lang:'English',src:s.s,st:'ai',bot:true,tags:[],lead:'New',intent:'',un:0,notes:[],msgs:[],camp:s.c||null,auto:!!s.c,adHead:s.h||''};if(s.c)sys(c,'Came from '+s.s.replace(' Ads',' ad')+' · '+campName(c));chats.unshift(c);if(S.v!=='inbox')go('inbox');S.cur=id;S.f='all';$('app').classList.add('op');incoming(c,s.x)}
+function ana(){const top=[['Kidney stones',52],['Prostate',38],['Consultation price',31],["Men's health",24],['Hours & location',16],['Circumcision',14],['Paediatric',11]];const fun=[['Started a chat',186],['Chose a service',141],['Received a price',97],['Asked to book',58],['Booked',41]];const out=[['Booked',41],['Price enquiry only',33],['Follow up',22],['Not interested',9],['Wrong number',4]];
+const days=['Mon','Tue','Wed','Thu','Fri','Sat'];let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
+const heat=days.map((d,di)=>`<span>${d}</span>`+Array.from({length:10},(_,h)=>{const open=di<5||(h>=2&&h<7);const v=open?Math.min(1,.15+rnd()*.5+((h===1||h===2||h===7)?.35:0)):0;return `<div style="opacity:${open?(.12+v*.88).toFixed(2):.04}" title="${d} ${h+8}:00"></div>`}).join('')).join('');
+const live=chats.filter(c=>c.msgs.some(m=>m.t>ago(1440)));const rec=chats.filter(c=>c.st==='rec').length;
+const row=(a,max,q)=>a.map(([l,v])=>`<div class="bar"><span>${esc(l)}</span><div class="t"><i class="${q?'q':''}" style="width:${v/max*100}%"></i></div><span class="v">${v}</span></div>`).join('');
+$('ana').innerHTML=`<h2>Most patients stop after the price is sent</h2><p class="lead">This week 97 patients received a price, but only 58 asked to book. That's the biggest drop in the funnel. Kidney stones and prostate questions bring in nearly half of all chats.</p>
+<div class="kpis"><div class="kpi"><span>Chats this week</span><b>186</b><small>+14% on last week</small></div><div class="kpi"><span>Finished by AI alone</span><b>58%</b><small>108 of 186</small></div><div class="kpi"><span>Bookings</span><b>41</b><small>22% of chats</small></div><div class="kpi"><span>First staff reply</span><b>6 min</b><small>median after handover</small></div><div class="kpi"><span>Waiting now (live)</span><b>${rec}</b><small style="color:var(--mute)">${live.length} chats in 24h</small></div></div>
+<div class="grid2"><div class="box"><h3>Where patients drop off</h3>${row(fun,186)}</div><div class="box"><h3>What patients ask about</h3>${row(top,52)}</div>
+<div class="box"><h3>How chats ended</h3>${row(out,41,1)}</div><div class="box"><h3>Busy hours (8 am to 6 pm)</h3><div class="heat"><span></span>${Array.from({length:10},(_,h)=>`<span>${h+8}</span>`).join('')}${heat}</div><p style="font-size:13px;color:var(--mute);margin:10px 0 0">Darker is busier. Sunday closed; Saturday 10 am to 3 pm.</p></div>
+<div class="box ins"><h3>${ic('ai')} Weekly AI insight</h3><p>Price is the main objection: 33 chats ended right after the consultation fee was sent. Try adding "insurance accepted" and the next free slot to the price reply.</p><p>Somali speakers made up 1 in 5 chats. Several asked whether they could bring a translator, so the Somali quick reply is worth keeping near the top.</p><p>Google Ads brought 71 chats and 15 bookings; the website brought 64 chats and 17 bookings.</p></div>
+<div class="box"><h3>Questions the AI could not answer</h3>${unanswered.slice(0,6).map(u=>`<div class="note">${esc(u)}<small>Add an answer to the knowledge base or quick replies</small></div>`).join('')}</div></div>
+<p class="sample">Weekly figures are sample data for this simulation. "Waiting now" and new unanswered questions update live as you test.</p>`}
+function adsv(){const L=id=>chats.filter(c=>c.camp===id);
+const st=camps.map(m=>{const l=L(m.id);return{...m,ch:m.b[0]+l.length,bk:m.b[1]+l.filter(booked).length,pn:m.b[2]+l.filter(c=>c.paid>0).length,rev:m.b[3]+l.reduce((a,c)=>a+(c.paid||0),0)}});
+const org=[['Website',[38,10,8,41000]],['Direct',[29,9,7,33000]],['Referral',[6,3,3,15000]]].map(([s,b])=>{const l=chats.filter(c=>c.src===s);return{name:s,src:'No ad spend',spend:0,ch:b[0]+l.length,bk:b[1]+l.filter(booked).length,pn:b[2]+l.filter(c=>c.paid>0).length,rev:b[3]+l.reduce((a,c)=>a+(c.paid||0),0)}});
+const sum=(a,k)=>a.reduce((x,y)=>x+y[k],0);const F=S.adf||'all';const sel=F==='all'?st:st.filter(m=>m.src===F);
+const T={spend:sum(sel,'spend'),ch:sum(sel,'ch'),bk:sum(sel,'bk'),pn:sum(sel,'pn'),rev:sum(sel,'rev')};const mS=T.spend,mR=T.rev,mP=T.pn;const lbl=F==='all'?'All ads':F==='Meta Ads'?'Meta ads':'Google ads';const lo=F==='all'?'ads':F.replace(' Ads','');
+const ret=(r,s)=>s?(r/s).toFixed(1)+'×':'–';const per=(s,n)=>s&&n?KES(s/n):'–';
+const tr=m=>`<tr><td><b>${esc(m.name)}</b></td><td>${esc(m.src)}</td><td class="r">${m.id?`<input data-id="${m.id}" value="${m.spend}" inputmode="numeric" aria-label="Spend for ${esc(m.name)}">`:'–'}</td><td class="r">${m.ch}</td><td class="r">${m.bk}</td><td class="r">${m.pn}</td><td class="r">${KES(m.rev)}</td><td class="r">${per(m.spend,m.ch)}</td><td class="r">${per(m.spend,m.pn)}</td><td class="r">${ret(m.rev,m.spend)}</td></tr>`;
+const mx=Math.max(1,...sel.map(m=>Math.max(m.spend,m.rev)));
+const pend=chats.filter(c=>isAd(c.src)&&(F==='all'||c.src===F)&&booked(c)&&!c.paid);
+const tg=[['all','All ads'],['Meta Ads','Meta Ads'],['Google Ads','Google Ads']].map(([k,l])=>`<button class="tab ${F===k?'on':''}" data-af="${k}" aria-pressed="${F===k}">${l}</button>`).join('');
+$('ads').innerHTML=`<div class="tabs" style="padding:0 0 14px">${tg}</div><h2>${lbl}: ${KES(mS)} spent, ${KES(mR)} paid by ${mP} patients</h2><p class="lead">That is ${ret(mR,mS).replace('×','')} shillings back for every shilling spent on ${lo}, at ${per(mS,mP)} per paying patient. Revenue only counts amounts reception has entered, so it grows as visits are recorded.</p>
+<div class="kpis"><div class="kpi"><span>Ad spend this month</span><b>${KES(T.spend)}</b><small style="color:var(--mute)">${F==='all'?'Meta and Google':esc(F)}</small></div><div class="kpi"><span>Chats from ads</span><b>${T.ch}</b><small style="color:var(--mute)">${per(T.spend,T.ch)} per chat</small></div><div class="kpi"><span>Booked from ads</span><b>${T.bk}</b><small style="color:var(--mute)">${Math.round(T.bk/T.ch*100)}% of ad chats</small></div><div class="kpi"><span>Paying patients</span><b>${T.pn}</b><small style="color:var(--mute)">${per(T.spend,T.pn)} each</small></div><div class="kpi"><span>Revenue from ads</span><b>${KES(T.rev)}</b><small>${ret(T.rev,T.spend)} return</small></div></div>
+<div class="tw"><table class="tbl"><thead><tr><th>Campaign</th><th>Source</th><th class="r">Spend (KES)</th><th class="r">Chats</th><th class="r">Booked</th><th class="r">Paid</th><th class="r">Revenue</th><th class="r">Per chat</th><th class="r">Per paying patient</th><th class="r">Return</th></tr></thead><tbody>${sel.map(tr).join('')}<tr class="tot"><td>${lbl}</td><td></td><td class="r">${KES(T.spend)}</td><td class="r">${T.ch}</td><td class="r">${T.bk}</td><td class="r">${T.pn}</td><td class="r">${KES(T.rev)}</td><td class="r">${per(T.spend,T.ch)}</td><td class="r">${per(T.spend,T.pn)}</td><td class="r">${ret(T.rev,T.spend)}</td></tr>${F==='all'?org.map(tr).join(''):''}</tbody></table></div>
+<div class="grid2"><div class="box"><h3>Spend against revenue, by campaign</h3><div class="lg"><span style="--c:#c9cbd6">Spend</span><span style="--c:var(--acc)">Revenue entered</span></div>${sel.map(m=>`<div class="sv"><span><b>${esc(m.name)}</b><br><small>${esc(m.src)} · ${ret(m.rev,m.spend)}</small></span><div class="t"><i class="s" style="width:${m.spend/mx*100}%"></i><i class="v" style="width:${m.rev/mx*100}%"></i></div></div>`).join('')}</div>
+<div class="box"><h3>Amounts still to enter</h3>${pend.length?pend.map(c=>`<div class="note" style="display:flex;gap:10px;align-items:center"><div style="flex:1"><b>${esc(c.name)}</b><small>${esc(c.src)} · ${esc(campName(c))} · ${esc(c.lead)}</small></div><button class="btn b2" data-open="${c.id}">Open chat</button></div>`).join(''):'<p class="hint">All booked ad patients have an amount entered.</p>'}<p class="hint">Patients who booked from an ad but have no amount yet. Reception enters it in the patient profile after the visit.</p></div>
+<div class="box"><h3>Add a campaign</h3><div class="form3"><label>Name<input type="text" id="cn" placeholder="e.g. Prostate · Dec"></label><label>Source<select id="cs"><option ${F!=='Google Ads'?'selected':''}>Meta Ads</option><option ${F==='Google Ads'?'selected':''}>Google Ads</option></select></label><label>Spend (KES)<input type="text" id="cv" inputmode="numeric" placeholder="20000"></label><button class="btn b1" id="cadd">${ic('plus')}Add</button></div></div>
+<div class="box ins"><h3>How patients are matched to ads</h3><p><b>Meta click-to-WhatsApp ads:</b> WhatsApp sends the ad's ID and headline with the patient's first message, so the chat is tagged automatically.</p><p><b>Google Ads and the website:</b> the WhatsApp link pre-fills a short code (for example "ref G1"), which the webhook reads and removes.</p><p><b>Everyone else:</b> reception asks how they heard about URO-CARE and picks the source in the profile.</p></div></div>
+<p class="sample">Earlier figures this month are sample data. Chats in the inbox, sources you change and amounts you enter update this page live.</p>`;
+$('ads').querySelectorAll('[data-af]').forEach(b=>b.onclick=()=>{S.adf=b.dataset.af;adsv()});
+$('ads').querySelectorAll('.tbl input').forEach(i=>i.onchange=()=>{const m=camps.find(x=>x.id===i.dataset.id);m.spend=parseInt(i.value.replace(/[^0-9]/g,''),10)||0;adsv()});
+$('ads').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{S.cur=b.dataset.open;S.pt='profile';go('inbox');$('app').classList.add('op','sp');render()});
+$('cadd').onclick=()=>{const n=$('cn').value.trim(),v=parseInt($('cv').value.replace(/[^0-9]/g,''),10)||0;if(!n)return $('cn').focus();camps.push({id:'x'+now(),name:n,src:$('cs').value,spend:v,b:[0,0,0,0]});adsv();toast(ic('check')+'Campaign added. Pick it in a patient profile to count them.')}}
+function qrv(){$('qr').innerHTML=`<h2>Quick replies</h2><p class="lead">Saved answers reception can drop into any chat from the composer.</p><div class="box qlist">${qr.map((q,i)=>`<div class="note"><div><b>${esc(q.t)}</b><br>${esc(q.x)}</div><button class="ib" data-i="${i}" aria-label="Delete ${esc(q.t)}">${ic('x')}</button></div>`).join('')}<input type="text" id="qt" placeholder="Title, e.g. Parking" style="margin:8px 0" aria-label="Quick reply title"><textarea id="qx" style="width:100%;height:70px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--soft);font-size:16px" placeholder="Reply text" aria-label="Quick reply text"></textarea><button class="btn b1" id="qadd" style="margin-top:8px">${ic('plus')}Add quick reply</button></div>`;
+$('qr').querySelectorAll('.ib').forEach(b=>b.onclick=()=>{qr.splice(+b.dataset.i,1);qrv()});$('qadd').onclick=()=>{const t=$('qt').value.trim(),x=$('qx').value.trim();if(t&&x){qr.push({t,x});qrv()}}}
+function cfgv(){const R=[['ai','AI answers typed questions','Uses the same knowledge base as the website assistant. Off sends every message straight to reception.'],['book','Hand over when a patient wants to book','The AI collects the request and reception confirms the time.'],['strip','Remove phone numbers before AI analysis','Keeps patient numbers out of the AI provider\'s logs.'],['hours','Out-of-hours message only','Outside clinic hours, the AI answers and tells patients reception replies from 9 am.']];
+$('cfg').innerHTML=`<h2>AI settings</h2><p class="lead">These switches change how the simulation behaves. Try turning off the AI, then press Simulate patient message.</p><div class="box">${R.map(([k,t,d])=>`<div class="set"><div><b>${t}</b><p>${d}</p></div><button class="sw ${cfg[k]?'on':''}" data-k="${k}" aria-pressed="${cfg[k]}" aria-label="${t}"><i></i></button></div>`).join('')}<div class="set" style="border:0"><div><b>Urgent words</b><p>Blood, bleeding, cannot pass urine, severe pain, fever. These always alert reception and tell the patient to call or seek emergency care.</p></div></div></div>`;
+$('cfg').querySelectorAll('.sw').forEach(b=>b.onclick=()=>{cfg[b.dataset.k]=!cfg[b.dataset.k];cfgv()})}
+$('lg').innerHTML=ic('cross');$('waI').innerHTML=ic('chat');$('sI').innerHTML=ic('search');$('backBtn').innerHTML=ic('back');$('profBtn').innerHTML=ic('user');$('simBtn').innerHTML=ic('play')+'<span class="tx">Simulate patient message</span>';
+$('backBtn').onclick=()=>$('app').classList.remove('op');$('profBtn').onclick=()=>$('app').classList.toggle('sp');$('simBtn').onclick=simulate;
+$('bell').onclick=()=>{go('inbox');S.f='rec';$('app').classList.remove('op');render()};
+$('q').oninput=e=>{S.q=e.target.value;list()};
+document.addEventListener('click',e=>{const p=$('pop');if(p&&!e.target.closest('#pop')&&!e.target.closest('#qrb'))p.classList.remove('on')});
+$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').classList.remove('on')};
+setInterval(()=>{if(S.v==='inbox'){list();const w=document.querySelector('.win');const c=cur();if(w&&c)w.innerHTML=win(c).h}},30000);
+nav();render();
+}
+</script>
+</body>
+</html>
